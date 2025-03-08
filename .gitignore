@@ -1,0 +1,5 @@
+# Build files
+build/
+
+# Don't bloat the repo with notes etc.
+.hidden/
