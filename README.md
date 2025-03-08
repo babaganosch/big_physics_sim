@@ -2,9 +2,9 @@
 
 ## Features
 * Objects rendered in one single draw call as quads via VA with positions and colors
+* Objects collide with each other (naive method)
 
 TODO:
-* Object collisions (naive)
 * Space partitioning used for object collision
 * ???
 * Profit
