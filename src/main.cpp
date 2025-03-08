@@ -3,9 +3,9 @@
 #include <iomanip>
 #include <sstream>
 
-constexpr uint32_t WINDOW_WIDTH = 1200;
-constexpr uint32_t WINDOW_HEIGHT = 600;
-constexpr uint32_t NUM_OBJECTS = 1000;
+constexpr uint32_t WINDOW_WIDTH = 1400;
+constexpr uint32_t WINDOW_HEIGHT = 900;
+constexpr uint32_t NUM_OBJECTS = 7000;
 
 int main() 
 {

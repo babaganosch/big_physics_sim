@@ -7,9 +7,11 @@
 #define SPRITE_WIDTH  256
 #define SPRITE_HEIGHT 256
 
+static uint32_t next_object_id = 0;
 struct object_t 
 {
-    float radius;
+    uint32_t id{next_object_id++};
+    uint8_t radius;
     sf::Vector2f position{0, 0};
     sf::Vector2f position_prev{0, 0};
     sf::Vector2f acceleration{0, 0};
