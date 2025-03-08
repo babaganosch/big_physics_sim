@@ -1,10 +1,10 @@
 #include "object.hpp"
 
-object_t::object_t( float radius, sf::Vector2f position, sf::Vector2f velocity, sf::Color color )
+object_t::object_t( float radius, sf::Vector2f position, sf::Color color )
 {
     this->radius = radius;
     this->position = position;
-    this->velocity = velocity;
+    this->position_prev = position;
 
     // Initialize vertices
     vertices[0].position = position + sf::Vector2f(-radius, -radius);
@@ -23,9 +23,13 @@ object_t::object_t( float radius, sf::Vector2f position, sf::Vector2f velocity, 
     vertices[3].color = color;
 }
 
-void object_t::update( )
+void object_t::update( float delta_time )
 {
-    position += velocity;
+    sf::Vector2f velocity = (position - position_prev);
+    position_prev = position;
+
+    position = position + velocity + acceleration * delta_time * delta_time;
+    acceleration = sf::Vector2f(0, 0);
 
     vertices[0].position = position + sf::Vector2f(-radius, -radius);
     vertices[1].position = position + sf::Vector2f(radius, -radius);

@@ -9,9 +9,10 @@
 
 struct object_t 
 {
-    uint8_t radius;
-    sf::Vector2f position;
-    sf::Vector2f velocity;
+    float radius;
+    sf::Vector2f position{0, 0};
+    sf::Vector2f position_prev{0, 0};
+    sf::Vector2f acceleration{0, 0};
 
     // Quad vertices
     //  0---1
@@ -19,8 +20,8 @@ struct object_t
     //  3---2
     sf::Vertex vertices[4];
 
-    object_t( float radius, sf::Vector2f position, sf::Vector2f velocity, sf::Color color );
-    void update( );
+    object_t( float radius, sf::Vector2f position, sf::Color color );
+    void update( float delta_time );
 };
 
 #endif /* OBJECT_HPP */

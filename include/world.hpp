@@ -15,9 +15,9 @@ struct world_t
     sf::VertexArray va{sf::Quads, 0};
     std::vector<object_t> objects{};
 
-    world_t(uint32_t width, uint32_t height, sf::Texture& texture, float gravity) : width(width), height(height), texture(texture), gravity(gravity) {}
+    world_t(uint32_t width, uint32_t height, float gravity);
 
-    void update();
+    void update(float delta_time);
     void render(sf::RenderWindow& window);
     void addObject(const object_t& object);
 };

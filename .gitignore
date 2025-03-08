@@ -1,5 +1,6 @@
 # Build files
 build/
 
-# Don't bloat the repo with notes etc.
+# Don't bloat the repo with notes, vscode settings etc.
 .hidden/
+.vscode/
