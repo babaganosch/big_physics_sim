@@ -31,4 +31,29 @@ void collision_grid_t::check_collision_cells(const std::vector<object_t*>& cell1
             object1->handle_collision(*object2);
         }
     }
-} 
+}
+
+void collision_grid_t::handle_collisions() {
+
+    handle_collision_chunk(0, 0, width, height);
+    
+}
+
+void collision_grid_t::handle_collision_chunk(int16_t sx, int16_t sy, int16_t ex, int16_t ey) {
+    // Check for object collisions
+    for (int16_t i = sx; i < ex; ++i) {
+        for (int16_t j = sy; j < ey; ++j) {
+
+            const auto& cell = get_objects(i, j);
+
+            // check surrounding cells
+            for (int16_t dx = -1; dx <= 1; ++dx) {
+                for (int16_t dy = -1; dy <= 1; ++dy) {
+
+                    const auto& other_cell = get_objects(i + dx, j + dy);
+                    check_collision_cells(cell, other_cell);
+                }
+            }
+        }
+    }
+}   

@@ -53,21 +53,7 @@ void world_t::update(float delta_time)
         }
 
         // Check for object collisions
-        for (int16_t i = 0; i < grid.width; ++i) {
-            for (int16_t j = 0; j < grid.height; ++j) {
-
-                const auto& cell = grid.get_objects(i, j);
-
-                // check surrounding cells
-                for (int16_t dx = -1; dx <= 1; ++dx) {
-                    for (int16_t dy = -1; dy <= 1; ++dy) {
-
-                        const auto& other_cell = grid.get_objects(i + dx, j + dy);
-                        grid.check_collision_cells(cell, other_cell);
-                    }
-                }
-            }
-        }
+        grid.handle_collisions();
 
         // Update objects
         for (size_t i = 0; i < objects.size();  ++i) {

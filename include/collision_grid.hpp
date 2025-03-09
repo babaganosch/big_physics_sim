@@ -15,7 +15,11 @@ struct collision_grid_t {
     void add_object(uint32_t x, uint32_t y, object_t* object);
     const std::vector<object_t*>& get_objects(uint32_t x, uint32_t y) const;
     void clear();
+    void handle_collisions();
+
+private:
     void check_collision_cells(const std::vector<object_t*>& cell1, const std::vector<object_t*>& cell2);
+    void handle_collision_chunk(int16_t sx, int16_t sy, int16_t ex, int16_t ey);
 };
 
 #endif // COLLISION_GRID_HPP 
