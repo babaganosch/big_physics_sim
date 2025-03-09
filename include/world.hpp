@@ -25,6 +25,7 @@ struct world_t
     void update(float delta_time);
     void render(sf::RenderWindow& window);
     void spawn_object();
+    void spawn_object( uint32_t x, uint32_t y );
 };
 
 #endif /* WORLD_HPP */

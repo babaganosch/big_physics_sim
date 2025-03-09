@@ -8,38 +8,46 @@ collision_grid_t::collision_grid_t(uint32_t width, uint32_t height) : width(widt
 
 void collision_grid_t::add_object(uint32_t x, uint32_t y, object_t* object) {
     if (x >= width || y >= height) return;
-    grid[x + y * width].push_back(object);
-}
-
-const std::vector<object_t*>& collision_grid_t::get_objects(uint32_t x, uint32_t y) const {
-    if (x >= width || y >= height) { return empty; }
-    return grid[x + y * width];
-}
-
-void collision_grid_t::clear() {
-    for (auto& row : grid) {
-        row.clear();
+    Cell& cell = get_cell(x, y);
+    if (cell.count < MAX_OBJECTS_PER_CELL) {
+        cell.objects[cell.count++] = object;
+    } else {
+        printf("PANIC! Cell at %d, %d is full!\n", x, y);
     }
 }
 
-void collision_grid_t::check_collision_cells(const std::vector<object_t*>& cell1, const std::vector<object_t*>& cell2) {
-    for (auto& object1 : cell1) {
-        if (!object1) continue;
+void collision_grid_t::clear() {
+    for (auto& cell : grid) {
+        cell.count = 0;
+    }
+}
 
-        for (auto& object2 : cell2) {
-            if (!object2) continue;
-            if (object1 == object2) continue;
+void collision_grid_t::check_collision_cells(const Cell& cell1, const Cell& cell2) {
+    if (cell1.count == 0 || cell2.count == 0) return;
 
-            object1->handle_collision(*object2);
+    const uint16_t count1 = cell1.count;
+    const uint16_t count2 = cell2.count;
+    object_t* const* objects1 = cell1.objects;
+    object_t* const* objects2 = cell2.objects;
+
+    for (uint16_t i = 0; i < count1; ++i) {
+        object_t* obj1 = objects1[i];
+        if (!obj1) continue;
+
+        for (uint16_t j = 0; j < count2; ++j) {
+            object_t* obj2 = objects2[j];
+            if (!obj2) continue;
+
+            if (obj1 != obj2) obj1->handle_collision(*obj2);
         }
     }
 }
 
 struct chunk_params {
-    int16_t sx;
-    int16_t sy;
-    int16_t ex;
-    int16_t ey;
+    uint32_t sx;
+    uint32_t sy;
+    uint32_t ex;
+    uint32_t ey;
     collision_grid_t* grid;
 };
 
@@ -50,49 +58,44 @@ void* handle_collision_chunk_thread(void* arg) {
 }
 
 void collision_grid_t::handle_collisions() {
+    const uint32_t CHUNK_WIDTH = width / 8;
+    chunk_params params[8] = {
+        {CHUNK_WIDTH * 0, 0, CHUNK_WIDTH * 1, height, this},
+        {CHUNK_WIDTH * 1, 0, CHUNK_WIDTH * 2, height, this},
+        {CHUNK_WIDTH * 2, 0, CHUNK_WIDTH * 3, height, this},
+        {CHUNK_WIDTH * 3, 0, CHUNK_WIDTH * 4, height, this},
+        {CHUNK_WIDTH * 4, 0, CHUNK_WIDTH * 5, height, this},
+        {CHUNK_WIDTH * 5, 0, CHUNK_WIDTH * 6, height, this},
+        {CHUNK_WIDTH * 6, 0, CHUNK_WIDTH * 7, height, this},
+        {CHUNK_WIDTH * 7, 0, width,           height, this}
+    };
 
-    const int16_t CHUNK_WIDTH = (int16_t)(width / 8);
-    chunk_params params1 = {0, 0, CHUNK_WIDTH, (int16_t)height, this};
-    chunk_params params2 = {(int16_t)(CHUNK_WIDTH * 1), 0, (int16_t)(CHUNK_WIDTH * 2), (int16_t)height, this};
-    chunk_params params3 = {(int16_t)(CHUNK_WIDTH * 2), 0, (int16_t)(CHUNK_WIDTH * 3), (int16_t)height, this};
-    chunk_params params4 = {(int16_t)(CHUNK_WIDTH * 3), 0, (int16_t)(CHUNK_WIDTH * 4), (int16_t)height, this};
-    chunk_params params5 = {(int16_t)(CHUNK_WIDTH * 4), 0, (int16_t)(CHUNK_WIDTH * 5), (int16_t)height, this};
-    chunk_params params6 = {(int16_t)(CHUNK_WIDTH * 5), 0, (int16_t)(CHUNK_WIDTH * 6), (int16_t)height, this};
-    chunk_params params7 = {(int16_t)(CHUNK_WIDTH * 6), 0, (int16_t)(CHUNK_WIDTH * 7), (int16_t)height, this};
-    chunk_params params8 = {(int16_t)(CHUNK_WIDTH * 7), 0, (int16_t)width, (int16_t)height, this};
+    pthread_t threads[8];
+    for (int i = 0; i < 8; ++i) {
+        pthread_create(&threads[i], NULL, handle_collision_chunk_thread, &params[i]);
+    }
 
-    pthread_t thread1, thread2, thread3, thread4, thread5, thread6, thread7, thread8;
-    pthread_create(&thread1, NULL, handle_collision_chunk_thread, (void*)&params1);
-    pthread_create(&thread2, NULL, handle_collision_chunk_thread, (void*)&params2);
-    pthread_create(&thread3, NULL, handle_collision_chunk_thread, (void*)&params3);
-    pthread_create(&thread4, NULL, handle_collision_chunk_thread, (void*)&params4);
-    pthread_create(&thread5, NULL, handle_collision_chunk_thread, (void*)&params5);
-    pthread_create(&thread6, NULL, handle_collision_chunk_thread, (void*)&params6);
-    pthread_create(&thread7, NULL, handle_collision_chunk_thread, (void*)&params7);
-    pthread_create(&thread8, NULL, handle_collision_chunk_thread, (void*)&params8);
-
-    pthread_join(thread1, NULL);
-    pthread_join(thread2, NULL);
-    pthread_join(thread3, NULL);
-    pthread_join(thread4, NULL);
-    pthread_join(thread5, NULL);
-    pthread_join(thread6, NULL);
-    pthread_join(thread7, NULL);
-    pthread_join(thread8, NULL);
+    for (int i = 0; i < 8; ++i) {
+        pthread_join(threads[i], NULL);
+    }
 }
 
-void collision_grid_t::handle_collision_chunk(int16_t sx, int16_t sy, int16_t ex, int16_t ey) {
-    // Check for object collisions
+void collision_grid_t::handle_collision_chunk(uint32_t sx, uint32_t sy, uint32_t ex, uint32_t ey) {
+
+    // Loop through all cells in the chunk
     for (int16_t i = sx; i < ex; ++i) {
         for (int16_t j = sy; j < ey; ++j) {
 
-            const auto& cell = get_objects(i, j);
+            const auto& cell = get_cell(i, j);
 
-            // check surrounding cells
+            // Check surrounding cells
             for (int16_t dx = -1; dx <= 1; ++dx) {
                 for (int16_t dy = -1; dy <= 1; ++dy) {
+                
+                    // Outside of grid, skip!
+                    if (i + dx < 0 || i + dx >= width || j + dy < 0 || j + dy >= height) continue;
 
-                    const auto& other_cell = get_objects(i + dx, j + dy);
+                    const auto& other_cell = get_cell(i + dx, j + dy);
                     check_collision_cells(cell, other_cell);
                 }
             }

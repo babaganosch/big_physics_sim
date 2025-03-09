@@ -23,7 +23,7 @@ world_t::world_t(uint32_t width, uint32_t height, float gravity, float min_radiu
 
     this->grid = collision_grid_t(grid_width, grid_height);
     
-    printf("grid_width: %d, grid_height: %d\n", grid_width, grid_height);
+    printf("Collision grid width: %d, height: %d\n", grid_width, grid_height);
 
 }
 
@@ -79,9 +79,17 @@ void world_t::render(sf::RenderWindow& window)
 
 void world_t::spawn_object()
 {
+    spawn_object(rand() % width, rand() % height);
+}
+
+void world_t::spawn_object( uint32_t x, uint32_t y )
+{
+    float radius = min_radius + (((rand() % 100) / 100.0f) * (max_radius - min_radius));
+    x = std::min(std::max((float)x, (float)radius), (float)width - radius);
+    y = std::min(std::max((float)y, (float)radius), (float)height - radius);
     object_t object(
-        min_radius + (((rand() % 100) / 100.0f) * (max_radius - min_radius)),
-        sf::Vector2f(rand() % width, rand() % height),
+        radius,
+        sf::Vector2f(x, y),
         sf::Color(rand() % 256, rand() % 256, rand() % 256)
     );
     objects.push_back(object);
