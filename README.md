@@ -15,7 +15,7 @@ __Specs:__
 * 11th Gen Intel(R) Core(TM) i7-11700KF @ 3.60GHz
 * Nvidia Geforce RTX 3070
 
-My space partitioning is very naive and just divides room in 24x24 cells. I believe there's quite some room for optimizations in the code all together but I should probably try to implement some kind of multithreading or something on the collision checks. Would be cool to utilize compute shaders, CUDA or something..
+My space partitioning is very naive and just divides room in cells twice the size of objects max-radius. This leaves a good amount of empty cells in half-empty rooms after objects settle at the bottom. I believe there's quite some room for optimizations in the code all together but I should probably try to implement some kind of multithreading or something on the collision checks. Would be cool to utilize compute shaders, CUDA or something..
 
 ## PreReq
 SFML - Easy window handling, rendering, events etc.

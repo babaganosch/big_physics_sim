@@ -1,8 +1,8 @@
-#include <cstdint>
-#include <SFML/Graphics.hpp>
-
 #ifndef OBJECT_HPP
 #define OBJECT_HPP
+
+#include <cstdint>
+#include <SFML/Graphics.hpp>
 
 #define SPRITE_WIDTH  256
 #define SPRITE_HEIGHT 256
@@ -24,6 +24,7 @@ struct object_t
 
     object_t( float radius, sf::Vector2f position, sf::Color color );
     void update( float delta_time );
+    void handle_collision( object_t& other );
 };
 
 #endif /* OBJECT_HPP */

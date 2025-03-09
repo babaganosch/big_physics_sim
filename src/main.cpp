@@ -1,11 +1,15 @@
 #include <SFML/Graphics.hpp>
-#include "world.hpp"
 #include <iomanip>
 #include <sstream>
 
-constexpr uint32_t WINDOW_WIDTH = 1400;
-constexpr uint32_t WINDOW_HEIGHT = 900;
-constexpr uint32_t NUM_OBJECTS = 7000;
+#include "world.hpp"
+
+constexpr uint32_t WINDOW_WIDTH  = 1600;
+constexpr uint32_t WINDOW_HEIGHT = 1200;
+constexpr float    MIN_RADIUS    = 2.0f;
+constexpr float    MAX_RADIUS    = 8.0f;
+constexpr float    GRAVITY       = 200.0f;
+constexpr uint32_t NUM_OBJECTS   = 7000;
 
 int main() 
 {
@@ -25,13 +29,9 @@ int main()
     rect.setFillColor(sf::Color(0, 0, 0, 128));
 
     // Create a world with randomly positioned objects, move to proper spawn method later..
-    world_t world(WINDOW_WIDTH, WINDOW_HEIGHT, 200.f);
+    world_t world(WINDOW_WIDTH, WINDOW_HEIGHT, GRAVITY, MIN_RADIUS, MAX_RADIUS);
     for (uint32_t i = 0; i < NUM_OBJECTS; i++) {
-        world.addObject(object_t(
-            1.0f + (((rand() % 100) / 100.0f) * 10.0f),                                          // radius
-            sf::Vector2f(rand() % WINDOW_WIDTH, rand() % WINDOW_HEIGHT),                         // position
-            sf::Color(rand() % 256, rand() % 256, rand() % 256)                                  // color
-        ));
+        world.spawn_object();
     }
 
     // Timing
