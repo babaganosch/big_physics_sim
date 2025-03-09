@@ -4,12 +4,12 @@
 
 #include "world.hpp"
 
-constexpr uint32_t WINDOW_WIDTH  = 1600;
+constexpr uint32_t WINDOW_WIDTH  = 1800;
 constexpr uint32_t WINDOW_HEIGHT = 1200;
 constexpr float    MIN_RADIUS    = 2.0f;
-constexpr float    MAX_RADIUS    = 8.0f;
+constexpr float    MAX_RADIUS    = 6.0f;
 constexpr float    GRAVITY       = 200.0f;
-constexpr uint32_t NUM_OBJECTS   = 7000;
+constexpr uint32_t NUM_OBJECTS   = 12000;
 
 int main() 
 {

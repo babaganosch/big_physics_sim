@@ -29,7 +29,7 @@ world_t::world_t(uint32_t width, uint32_t height, float gravity, float min_radiu
 
 void world_t::update(float delta_time)
 {
-    constexpr uint16_t SUB_STEPS = 4;
+    constexpr uint16_t SUB_STEPS = 6;
     const float sub_delta_time = delta_time / SUB_STEPS;
 
     for (uint16_t step = 0; step < SUB_STEPS; ++step) {
