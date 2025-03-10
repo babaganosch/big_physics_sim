@@ -15,6 +15,8 @@ My space partitioning is very naive and just divides room in cells twice the siz
 
 For the multithreading, 8 threads calculates the object to object collisions in columns of the world. This means that it'll perform better on wide worlds in most cases, as the objects typically collect uniformly on the ground.
 
+I am currently updating the vertices for the objects each sub-update, this is really unnecessary. The whole update function for the world should probably be updated to properly utilize multithreading instead of only for the grid checks.
+
 On my PC I can simulate about ~15000 objects (2-6px radii) in a 1600x900 world, with 6 sub-steps on the update. I would like to get to about 30-50k.
 
 __My specs:__
