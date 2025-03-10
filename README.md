@@ -6,7 +6,7 @@
 * Objects rendered in one single draw call as sprites on quads via vertex array
 * Objects collide with each other
 * Some kind of basic space partitioning
-* Multithreading on collision checks ( altough, not the finest )
+* Multithreading on object update ( altough, not the finest )
 
 ## Notes
 Sometimes the simulation can go haywild if there's too much entropy in the system. For example, crank up the gravity to 600 or something and watch a new universe get born. I can battle this behaviour by increasing the amount of sub-steps used for the world update, but that obviously decreases the performance..
