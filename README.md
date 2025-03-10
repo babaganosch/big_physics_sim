@@ -13,11 +13,9 @@ Sometimes the simulation can go haywild if there's too much entropy in the syste
 
 My space partitioning is very naive and just divides room in cells twice the size of objects max-radius. This leaves a good amount of empty cells in half-empty rooms after objects settle at the bottom. I believe there's quite some room for optimizations.
 
-For the multithreading, 8 threads calculates the object to object collisions in columns of the world. This means that it'll perform better on wide worlds in most cases, as the objects typically collect uniformly on the ground.
+For the multithreading, 8 threads split up the work of updating the objects each sub-step. Each thread work on chunks of the space partitioning grid in the form of columns. This means that it'll perform better on wide worlds in most cases, as the objects typically collect uniformly on the ground. For now, the threading code is quite ugly, but it does the work..
 
-I am currently updating the vertices for the objects each sub-update, this is really unnecessary. The whole update function for the world should probably be updated to properly utilize multithreading instead of only for the grid checks.
-
-On my PC I can simulate about ~15000 objects (2-6px radii) in a 1600x900 world, with 6 sub-steps on the update. I would like to get to about 30-50k.
+On my PC I can simulate about ~30000 objects (2-6px radii) in a 1800x1200 world, with 6 sub-steps on the update. I would like to get to above 50k.
 
 __My specs:__
 * Ubuntu 20.04.1
@@ -65,7 +63,7 @@ width: 1800
 height: 1200
 min-radius: 2.0
 max-radius: 6.0
-spawn-limit: 14000
+spawn-limit: 25000
 spawn-amount: 0
 gravity: 200.0
 rain: false

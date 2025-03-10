@@ -32,7 +32,10 @@ void object_t::update( float delta_time )
 
     position = position + velocity + acceleration * delta_time * delta_time;
     acceleration = sf::Vector2f(0, 0);
+}
 
+void object_t::update_vertices()
+{
     vertices[0].position = position + sf::Vector2f(-radius, -radius);
     vertices[1].position = position + sf::Vector2f(radius, -radius);
     vertices[2].position = position + sf::Vector2f(radius, radius);

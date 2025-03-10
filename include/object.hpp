@@ -25,6 +25,7 @@ struct object_t
     object_t( float radius, sf::Vector2f position, sf::Color color );
     void update( float delta_time );
     void handle_collision( object_t& other );
+    void update_vertices();
 };
 
 #endif /* OBJECT_HPP */

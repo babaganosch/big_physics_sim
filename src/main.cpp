@@ -9,7 +9,7 @@
 // Default values
 constexpr uint32_t WINDOW_WIDTH  = 1800;
 constexpr uint32_t WINDOW_HEIGHT = 1200;
-constexpr uint32_t MAX_OBJECTS   = 14000;
+constexpr uint32_t MAX_OBJECTS   = 25000;
 constexpr uint32_t SPAWN_AMOUNT  = 0;
 constexpr float    MIN_RADIUS    = 2.0f;
 constexpr float    MAX_RADIUS    = 6.0f;
